@@ -1,0 +1,7 @@
+# pr-axis
+
+> pr-axis is an independent studio building passive-income products: games, apps, and creative work. Built once, maintained with care, made to earn.
+
+## About
+
+- [pr-axis — coming soon](https://pr-axisdev.com/): The pr-axis company site. Currently a placeholder page while the full site is being built.
