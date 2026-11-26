@@ -1,7 +1,17 @@
-# pr-axis
+# pr-axis dev
 
-> pr-axis is an independent studio building passive-income products: games, apps, and creative work. Built once, maintained with care, made to earn.
+> pr-axis dev is an independent studio working in three services: design, build, and automate. Sites and interfaces are designed, built into working products, and the repeated work around them is automated.
 
 ## About
 
-- [pr-axis — coming soon](https://pr-axisdev.com/): The pr-axis company site. Currently a placeholder page while the full site is being built.
+- [pr-axis dev](https://pr-axisdev.com/): The studio site. Describes the three services, how a project runs from inquiry to handover, and starter prices.
+
+## Pages
+
+- [Home](https://pr-axisdev.com/): What the studio offers, the services and starter prices, how a project runs, and the inquiry form.
+- [Privacy](https://pr-axisdev.com/privacy): What the inquiry form collects and who processes it.
+
+## Notes
+
+- No client projects have shipped yet, so the site makes no case-study or results claims.
+- Pricing shown is "from" pricing for starter work; larger scopes are quoted per project.
