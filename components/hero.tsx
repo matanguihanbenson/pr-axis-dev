@@ -206,11 +206,12 @@ export function Hero() {
 
       <div className="page-shell hero__inner">
         <h1 className="h1" ref={titleRef}>
-          An idea becomes a product that runs itself.
+          You bring the idea. We design it, build it, and automate it.
         </h1>
         <div ref={restRef} className="stack-md">
           <p className="p p--large">
-            The work that eats your week, handled while you do the real work.
+            The work that eats your week, handled for you, so your time goes to
+            the work only you can do.
           </p>
           <div className="hero__cta">
             <Button label="Work with us" variant="primary" href="#contact" />

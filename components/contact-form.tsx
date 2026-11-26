@@ -14,16 +14,28 @@ export function ContactForm() {
   const { requestedService } = usePillar();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [need, setNeed] = useState<string | null>(null);
+  const [needs, setNeeds] = useState<string[]>([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (!requestedService) return;
-    setNeed(`${requestedService.pillarId}:${requestedService.serviceId}`);
+    setNeeds([`${requestedService.pillarId}:${requestedService.serviceId}`]);
     setSubmitted(false);
   }, [requestedService]);
+
+  // More than one service can be chosen. "Not sure yet" clears the rest, and
+  // choosing a service again drops it.
+  const chooseNeed = (key: string, checked: boolean) => {
+    setNeeds((current) => {
+      if (key === NOT_SURE) return checked ? [NOT_SURE] : [];
+      const without = current.filter(
+        (item) => item !== key && item !== NOT_SURE,
+      );
+      return checked ? [...without, key] : without;
+    });
+  };
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -36,8 +48,8 @@ export function ContactForm() {
       setError("Add an email address we can reply to.");
       return;
     }
-    if (!need) {
-      setError("Pick the one thing you need, or choose Not sure yet.");
+    if (needs.length === 0) {
+      setError("Select at least one service, or choose Not sure yet.");
       return;
     }
 
@@ -49,7 +61,7 @@ export function ContactForm() {
     return (
       <div className="form-confirmation" role="status">
         <p className="p p--strong">
-          Thanks — we&apos;ll get back to you within one business day.
+          Thanks, your inquiry is in. We&apos;ll reply within one business day.
         </p>
       </div>
     );
@@ -86,7 +98,7 @@ export function ContactForm() {
 
       <div className="form-grid__full">
         <p className="p p--strong">What do you need?</p>
-        <p className="p">Pick exactly one. One thing is enough.</p>
+        <p className="p">Select the services you want.</p>
         <div
           className="service-picker"
           role="group"
@@ -98,16 +110,16 @@ export function ContactForm() {
               <CheckboxInput
                 key={key}
                 label={service.name}
-                value={need === key}
-                onChange={(checked) => setNeed(checked ? key : null)}
+                value={needs.includes(key)}
+                onChange={(checked) => chooseNeed(key, checked)}
                 htmlName={`need-${service.id}`}
               />
             );
           })}
           <CheckboxInput
             label="Not sure yet"
-            value={need === NOT_SURE}
-            onChange={(checked) => setNeed(checked ? NOT_SURE : null)}
+            value={needs.includes(NOT_SURE)}
+            onChange={(checked) => chooseNeed(NOT_SURE, checked)}
             htmlName="need-not-sure"
           />
         </div>
@@ -132,7 +144,7 @@ export function ContactForm() {
         ) : null}
         <div>
           <Button
-            label="Let's build yours"
+            label="Send inquiry"
             variant="primary"
             type="submit"
             size="lg"
@@ -147,7 +159,7 @@ export function ContactHeading() {
   return (
     <div className="section-head" style={{ marginBottom: 0 }}>
       <span className="eyebrow">Work with us</span>
-      <h2 className="h2">Tell us the one thing.</h2>
+      <h2 className="h2">Tell us what you need.</h2>
       <p className="p">
         No account, no newsletter. One form, and a person reads it.
       </p>

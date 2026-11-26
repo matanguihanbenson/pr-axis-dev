@@ -8,6 +8,7 @@ const NAV_ITEMS: { href: string; label: string; pillar?: PillarId }[] = [
   { href: "#build", label: PILLARS[1].label, pillar: PILLARS[1].id },
   { href: "#automate", label: PILLARS[2].label, pillar: PILLARS[2].id },
   { href: "#offer", label: "What we offer" },
+  { href: "#pricing", label: "Pricing" },
 ];
 
 export function SiteHeader() {

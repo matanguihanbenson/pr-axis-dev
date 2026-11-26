@@ -1,8 +1,113 @@
 "use client";
 
-import { Card } from "@astryxdesign/core/Card";
-import { ALL_SERVICES } from "@/lib/services";
+import type { ReactNode } from "react";
+import { PILLARS } from "@/lib/services";
+import type { Service } from "@/lib/services";
 import { usePillar } from "./pillar-context";
+
+// One line-mark per service, drawn in the same hairline language as the page.
+const ICONS: Record<string, ReactNode> = {
+  "ui-ux": (
+    <>
+      <rect x="2.5" y="3.5" width="11" height="8" rx="1.5" />
+      <path d="M2.5 6.5h11M5.5 14h5" />
+    </>
+  ),
+  graphics: (
+    <>
+      <path d="M2.5 12.5 8 3.5l5.5 9z" />
+      <circle cx="8" cy="9.8" r="1.4" />
+    </>
+  ),
+  brand: (
+    <>
+      <path d="M8 2.5v11M2.5 8h11M4.2 4.2l7.6 7.6M11.8 4.2 4.2 11.8" />
+    </>
+  ),
+  video: (
+    <>
+      <rect x="2" y="4" width="12" height="8" rx="1.5" />
+      <path d="M6.8 6.4 9.6 8l-2.8 1.6z" />
+    </>
+  ),
+  audit: (
+    <>
+      <circle cx="7" cy="7" r="3.6" />
+      <path d="M9.9 9.9 13.5 13.5" />
+    </>
+  ),
+  websites: (
+    <>
+      <rect x="2" y="3.5" width="12" height="9" rx="1.5" />
+      <path d="M2 6.2h12" />
+    </>
+  ),
+  "web-apps": (
+    <>
+      <rect x="2" y="2.5" width="4.8" height="11" rx="1" />
+      <rect x="9.2" y="2.5" width="4.8" height="4.8" rx="1" />
+      <rect x="9.2" y="9.2" width="4.8" height="4.3" rx="1" />
+    </>
+  ),
+  "mobile-apps": (
+    <>
+      <rect x="5" y="2" width="6" height="12" rx="1.6" />
+      <path d="M7.4 12.2h1.2" />
+    </>
+  ),
+  systems: (
+    <>
+      <rect x="2.5" y="2.5" width="8" height="8" rx="1.2" />
+      <rect x="5.5" y="5.5" width="8" height="8" rx="1.2" />
+    </>
+  ),
+  "lead-capture": (
+    <>
+      <path d="M2.5 3.5h11l-4.2 5v5l-2.6 1.5v-6.5z" />
+    </>
+  ),
+  "follow-up": (
+    <>
+      <circle cx="8" cy="8" r="5.5" />
+      <path d="M8 5.2V8l2 1.4" />
+    </>
+  ),
+  research: (
+    <>
+      <circle cx="7" cy="7" r="3.6" />
+      <path d="M9.9 9.9 13.5 13.5M5.4 7h3.2M7 5.4v3.2" />
+    </>
+  ),
+  reporting: (
+    <>
+      <path d="M3.5 13V8.5M8 13V4.5M12.5 13V10M2.5 13h11" />
+    </>
+  ),
+  crm: (
+    <>
+      <rect x="2.5" y="3.5" width="11" height="9" rx="1.5" />
+      <path d="M5 7h4M5 9.5h6" />
+    </>
+  ),
+};
+
+function ServiceIcon({ id }: { id: string }) {
+  return (
+    <svg
+      className="offer-card__icon"
+      viewBox="0 0 16 16"
+      aria-hidden="true"
+      focusable="false"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {ICONS[id] ?? ICONS.systems}
+    </svg>
+  );
+}
 
 export function OfferGrid() {
   const { selectService } = usePillar();
@@ -17,26 +122,73 @@ export function OfferGrid() {
     });
   };
 
+  const card = (pillarId: string, service: Service) => (
+    <a
+      key={`${pillarId}-${service.id}`}
+      className="offer-card"
+      href="#services"
+      onClick={(event) => {
+        event.preventDefault();
+        openInPillar(pillarId, service.id);
+      }}
+    >
+      <span className="offer-card__top">
+        <ServiceIcon id={service.id} />
+        <span className="offer-card__price">
+          {service.startingPrice ?? "Custom quote"}
+        </span>
+      </span>
+      <h4 className="offer-card__name">{service.name}</h4>
+      <p className="p">{service.summary}</p>
+      <ul className="offer-card__gets">
+        {service.gets.slice(0, 3).map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+      <span className="offer-card__link">See details</span>
+    </a>
+  );
+
+  const ctaCard = (
+    <a className="offer-card offer-card--cta" href="#contact">
+      <span className="offer-card__top">
+        <svg
+          className="offer-card__icon"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+          focusable="false"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M8 3v10M3 8h10" />
+        </svg>
+      </span>
+      <h4 className="offer-card__name">Not sure yet?</h4>
+      <p className="p">Tell us what you need and we will take it from there.</p>
+      <span className="offer-card__link">Go to the form</span>
+    </a>
+  );
+
+  // One column per pillar, each carrying its own service count. Build holds
+  // four services plus the CTA card, so all three columns end together.
   return (
     <div className="offer-grid">
-      {ALL_SERVICES.map(({ pillarId, pillarLabel, service }) => (
-        <Card key={`${pillarId}-${service.id}`} padding={4}>
-          <div className="offer-card">
-            <span className="offer-card__pillar">{pillarLabel}</span>
-            <h3 className="h3">{service.name}</h3>
-            <p className="p">{service.summary}</p>
-            <a
-              className="offer-card__link"
-              href="#services"
-              onClick={(event) => {
-                event.preventDefault();
-                openInPillar(pillarId, service.id);
-              }}
-            >
-              Open in {pillarLabel}
-            </a>
+      {PILLARS.map((pillar) => (
+        <div className="offer-column" key={pillar.id}>
+          <div className="offer-group">
+            <h3 className="offer-group__title">{pillar.label}</h3>
+            <span className="offer-group__meta">
+              {pillar.services.length} services
+            </span>
           </div>
-        </Card>
+          <div className="offer-column__cards">
+            {pillar.services.map((service) => card(pillar.id, service))}
+            {pillar.id === "build" ? ctaCard : null}
+          </div>
+        </div>
       ))}
     </div>
   );

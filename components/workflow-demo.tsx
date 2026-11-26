@@ -263,6 +263,11 @@ export function WorkflowDemo() {
 
         <div className="demo__column">
           <span className="demo__column-title">CRM</span>
+          {status === "done" ? (
+            <p className="p p--strong demo__done" role="status">
+              Done. The inquiry moved through all four steps.
+            </p>
+          ) : null}
           <div className="demo-crm" aria-live="polite">
             {crmReady ? (
               <>

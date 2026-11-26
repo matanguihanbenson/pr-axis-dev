@@ -13,25 +13,26 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const title = "pr-axis dev | Design, Build, Automate";
 const description =
-  "pr-axis is an independent studio building passive-income products: games, apps, and creative work. Built once, maintained with care, made to earn.";
+  "pr-axis dev designs, builds, and automates the work that eats your week: interfaces, websites, web apps, mobile apps, internal systems, and the repetitive flows between them.";
 
 export const metadata: Metadata = {
-  title: "pr-axis — coming soon",
+  title,
   description,
   alternates: {
     canonical: "https://pr-axisdev.com/",
   },
   openGraph: {
     type: "website",
-    siteName: "pr-axis",
-    title: "pr-axis — coming soon",
+    siteName: "pr-axis dev",
+    title,
     description,
     url: "https://pr-axisdev.com/",
   },
   twitter: {
     card: "summary",
-    title: "pr-axis — coming soon",
+    title,
     description,
   },
   icons: {
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "pr-axis",
+  name: "pr-axis dev",
   url: "https://pr-axisdev.com/",
   description,
 };

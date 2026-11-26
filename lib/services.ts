@@ -5,6 +5,8 @@ export type Service = {
   name: string;
   summary: string;
   gets: string[];
+  /** The starter price, only where a starter maps to one named service. */
+  startingPrice?: string;
 };
 
 export type Pillar = {
@@ -27,7 +29,7 @@ export const PILLARS: Pillar[] = [
         id: "ui-ux",
         name: "UI/UX Design",
         summary:
-          "Interfaces people understand on first sight — designed in Figma, tested with real flows, never generic.",
+          "Interfaces people understand on first sight. Designed in Figma, tested with real flows, never generic.",
         gets: [
           "A clickable Figma design to approve before anything is built",
           "Every screen mapped to what a visitor is actually trying to do",
@@ -38,7 +40,7 @@ export const PILLARS: Pillar[] = [
         id: "graphics",
         name: "Graphics Design",
         summary:
-          "Visuals that carry the brand — social, print, and product graphics with one consistent look.",
+          "Visuals that carry the brand, covering social, print, and product graphics with one consistent look.",
         gets: [
           "One consistent look across social, print, and product graphics",
           "Files delivered in the formats you need to use them",
@@ -71,7 +73,8 @@ export const PILLARS: Pillar[] = [
         id: "audit",
         name: "Design Audit",
         summary:
-          "A professional review of your website or app — every place visitors get confused or stuck, listed and ranked, with how to fix each one.",
+          "A professional review of your website or app. Every place visitors get confused or stuck, listed and ranked, with how to fix each one.",
+        startingPrice: "from $300",
         gets: [
           "Every place visitors get confused or stuck, listed and ranked by impact",
           "A fix for each finding, in plain language",
@@ -85,13 +88,14 @@ export const PILLARS: Pillar[] = [
     step: 2,
     label: "Build",
     intro:
-      "Working software: the site, the app, the internal system — built to run without you standing over it.",
+      "Websites, web apps, mobile apps, and internal systems. Fast, built to last, and shaped around how your business actually works.",
     services: [
       {
         id: "websites",
         name: "Websites",
         summary:
-          "Fast, search-ready marketing sites that say what you do and bring the inquiry in.",
+          "A fast site that introduces your business and shows visitors what you do, so they understand it in seconds.",
+        startingPrice: "from $500",
         gets: [
           "A fast site that says what you do in the first screen",
           "Built search-ready, with the titles and descriptions in place",
@@ -102,9 +106,9 @@ export const PILLARS: Pillar[] = [
         id: "web-apps",
         name: "Web Apps",
         summary:
-          "Working products in the browser — dashboards, tools, and systems your team actually uses.",
+          "Working products in the browser: dashboards, tools, and systems your team actually uses.",
         gets: [
-          "A working product in the browser — dashboards, tools, and systems",
+          "A working product in the browser: dashboards, tools, and systems",
           "Built around your team's actual workflow, not a generic template",
           "Something your team can use on day one, not just look at",
         ],
@@ -124,7 +128,7 @@ export const PILLARS: Pillar[] = [
         id: "systems",
         name: "Systems",
         summary:
-          "Internal systems that replace spreadsheets and manual work — one source of truth, not five.",
+          "Internal systems that replace spreadsheets and manual work, one source of truth, not five.",
         gets: [
           "One source of truth replacing spreadsheets and manual work",
           "The workflow your team actually follows, built into the system",
@@ -144,10 +148,10 @@ export const PILLARS: Pillar[] = [
         id: "lead-capture",
         name: "Lead Capture Agent",
         summary:
-          "Catches every inquiry from every channel and puts it in one place, the moment it arrives.",
+          "Catches every inquiry and puts it in one place, the moment it arrives.",
         gets: [
-          "Every inquiry from every channel, in one place, the moment it arrives",
-          "Nothing lost between inbox, form, and chat",
+          "Your team stops doing the same task by hand. The system does it, the same way, every time.",
+          "Every inquiry, in one place, the moment it arrives",
           "Each lead logged with where it came from",
         ],
       },
@@ -155,10 +159,10 @@ export const PILLARS: Pillar[] = [
         id: "follow-up",
         name: "Follow-up Agent",
         summary:
-          "Sends the right follow-up at the right time, and never lets a warm lead go cold.",
+          "Sends the follow-up at the right time, so no inquiry goes unanswered.",
         gets: [
           "The right follow-up, at the right time, without anyone remembering to send it",
-          "Warm leads never go cold because a day slipped by",
+          "No inquiry sits unanswered because a day slipped by",
           "Every follow-up logged, so you can see what went out",
         ],
       },
@@ -177,7 +181,7 @@ export const PILLARS: Pillar[] = [
         id: "reporting",
         name: "Reporting Agent",
         summary:
-          "Turns the week's numbers into a short summary — what happened, what matters, what's next.",
+          "Turns the week's numbers into a short summary: what happened, what matters, what's next.",
         gets: [
           "The week's numbers as a short summary: what happened, what matters, what's next",
           "No more opening five tools to answer one question",
@@ -188,11 +192,11 @@ export const PILLARS: Pillar[] = [
         id: "crm",
         name: "CRM & Insights Agent",
         summary:
-          "Keeps your records clean, logs every interaction, and shows what needs a follow-up and what is falling through — automatically.",
+          "Keeps your records clean, logs every interaction, and shows what needs a follow-up and what is falling through, automatically.",
         gets: [
           "Records kept clean, with every interaction logged automatically",
           "A clear view of response times, follow-up gaps, and conversion trends",
-          "A short list of what needs a follow-up — and what is falling through",
+          "A short list of what needs a follow-up, and what is falling through",
         ],
       },
     ],
@@ -222,7 +226,7 @@ export const STARTERS = [
   {
     name: "One automation",
     price: "from $400",
-    line: "One repetitive workflow, handled from start to finish without you.",
+    line: "One repetitive workflow, automated from start to finish.",
   },
   {
     name: "Design audit",
@@ -234,7 +238,7 @@ export const STARTERS = [
 export const PROCESS_STEPS = [
   {
     title: "We map the workflow",
-    line: "What you need, where it breaks now, and what finished looks like.",
+    line: "What you need, how it works today, and what finished looks like.",
   },
   {
     title: "We build it",
@@ -242,6 +246,6 @@ export const PROCESS_STEPS = [
   },
   {
     title: "We hand it over and maintain it",
-    line: "It runs without you. We keep it running.",
+    line: "It runs on its own. We keep it running.",
   },
 ];
