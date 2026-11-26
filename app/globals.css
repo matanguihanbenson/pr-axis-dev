@@ -27,6 +27,11 @@ body {
   color: var(--color-text-primary);
 }
 
+/* Every in-page anchor (header, footer, back to top) eases instead of jumping. */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-family-body);
   -webkit-font-smoothing: antialiased;
@@ -193,6 +198,12 @@ section[id],
   color: var(--color-text-primary);
 }
 
+/* The section in view: white and a touch heavier than the rest. */
+.site-nav a[aria-current="true"] {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
 .site-nav a:focus-visible,
 .wordmark:focus-visible {
   outline: 2px solid var(--color-accent);
@@ -237,8 +248,73 @@ section[id],
   flex: none;
 }
 
+/* Hamburger and the panel it opens are mobile-only. Two hairlines fold into
+   an X while open; the panel below the header reveals itself. */
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-element);
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.menu-toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.menu-toggle__bars {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 10px;
+}
+
+.menu-toggle__bars > span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+  transition:
+    top 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-toggle__bars > span:first-child {
+  top: 0;
+}
+
+.menu-toggle__bars > span:last-child {
+  top: 8.5px;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__bars > span:first-child {
+  top: 4.25px;
+  transform: rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__bars > span:last-child {
+  top: 4.25px;
+  transform: rotate(-45deg);
+}
+
+.site-menu {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .nav-cta {
+  .nav-cta,
+  .menu-toggle__bars > span,
+  .site-menu,
+  .site-menu__clip {
     transition: none;
   }
 }
@@ -293,6 +369,96 @@ section[id],
   margin-top: 12px;
 }
 
+/* The headline: a fixed lead, then a typed line. "We" stays put while the
+   rest types in and deletes out. Every character keeps its slot from the
+   start, so the centred line never reflows as it grows. */
+.hero__title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.04em;
+}
+
+.hero__title-lead {
+  display: block;
+}
+
+.hero__rotator {
+  display: inline-flex;
+  align-items: baseline;
+  max-width: 100%;
+}
+
+.hero__rotator-we {
+  margin-right: 0.26em;
+}
+
+.hero__typed {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+/* A character fades and lifts into place as it is typed, and the same
+   transition walks it back out on delete. The slot never moves. */
+.hero__typed-char {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(4px);
+  transform: translateY(0.14em);
+  transition:
+    opacity 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+
+.hero__typed-char[data-visible="true"] {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+}
+
+.hero__caret {
+  display: inline-block;
+  width: 0.055em;
+  min-width: 2px;
+  height: 0.74em;
+  margin-left: 0.08em;
+  background: var(--color-accent);
+  animation: hero-caret-blink 1.05s step-end infinite;
+}
+
+/* Solid while typing or deleting; it blinks while the line is at rest. */
+.hero__caret[data-busy="true"] {
+  animation: none;
+  opacity: 1;
+}
+
+@keyframes hero-caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Circuit pulses.
    Each pulse is a hairline of one weight end to end — a segment of the grey
    grid line, in accent — cruising along the grid and turning at the
@@ -334,6 +500,14 @@ section[id],
 @media (prefers-reduced-motion: reduce) {
   .hero__circuits {
     display: none;
+  }
+
+  .hero__typed-char {
+    transition: none;
+  }
+
+  .hero__caret {
+    animation: none;
   }
 }
 
@@ -556,73 +730,155 @@ section[id],
 }
 
 /* What we offer
-   One column per pillar: heading, then that pillar's services stacked under
-   it. Build carries the CTA card as its fifth, so the three columns end level
-   and no row is left half empty. */
+   A filterable carousel: square hairline filters on the left, arrow controls
+   on the right, and a snap track of cards below. Three cards per view on
+   desktop, two on tablet, one and a peek on a phone. */
 
-.offer-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  /* Columns share the tallest height, so the three of them end level. */
-  align-items: stretch;
-}
-
-.offer-column {
+.offer-toolbar {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  height: 100%;
-}
-
-.offer-column__cards {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Cards share the leftover height, so a shorter column still reaches the
-   bottom edge instead of stopping short. */
-.offer-column__cards .offer-card {
-  flex: 1;
-}
-
-.offer-group {
-  display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  margin-bottom: 24px;
 }
 
-.offer-group__title {
-  margin: 0;
-  font-size: 1.125rem;
-  line-height: 1.3;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+.offer-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.offer-group__meta {
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+/* Square, hairline, no fill until it is the active filter. */
+.offer-filter {
+  padding: 9px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
   color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
 }
 
+.offer-filter:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-border-emphasized);
+}
+
+.offer-filter[aria-pressed="true"] {
+  color: var(--color-text-primary);
+  border-color: var(--color-accent);
+  background: var(--color-background-surface);
+}
+
+.offer-filter:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.offer-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.offer-control {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.offer-control svg {
+  width: 12px;
+  height: 12px;
+}
+
+.offer-control:hover:not(:disabled) {
+  border-color: var(--color-border-emphasized);
+  background: var(--color-background-surface);
+}
+
+/* Nothing left to scroll toward, so the arrow steps back rather than vanish. */
+.offer-control:disabled {
+  color: var(--color-text-secondary);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.offer-control:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.offer-track {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Room for the focus ring above and below the cards, without an inline
+     offset that would leave the track scrolled by a couple of pixels. */
+  padding-block: 2px;
+  margin-block: -2px;
+}
+
+.offer-track::-webkit-scrollbar {
+  display: none;
+}
+
+.offer-track .offer-card {
+  flex: 0 0 calc((100% - 32px) / 3);
+  scroll-snap-align: start;
+}
+
+@media (max-width: 1080px) {
+  .offer-track .offer-card {
+    flex-basis: calc((100% - 16px) / 2);
+  }
+}
+
+@media (max-width: 720px) {
+  /* One card plus the start of the next, so the track reads as scrollable. */
+  .offer-track .offer-card {
+    flex-basis: 85%;
+  }
+
+  .offer-toolbar {
+    align-items: flex-start;
+  }
+}
+
+/* A card reads as a spec sheet: a hairline header band with the icon, pillar
+   and price; the pitch; a labelled list of what you get; and a footer that
+   holds the link. The track stretches every card to the tallest one, and the
+   footer is pinned, so a row shares one top and one bottom line. */
 .offer-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  height: 100%;
-  padding: 20px;
+  /* No height here: the track's stretch makes every card in the row equal. */
   border: 1px solid var(--color-border);
   border-radius: var(--radius-container);
   background: var(--color-background-surface);
   color: inherit;
   text-decoration: none;
+  overflow: hidden;
   transition:
     border-color 160ms ease,
     background-color 160ms ease;
@@ -641,34 +897,109 @@ section[id],
 .offer-card__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.offer-card__icon-frame {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.offer-card:hover .offer-card__icon-frame {
+  border-color: var(--color-accent);
+  background: var(--color-accent-muted);
 }
 
 .offer-card__icon {
   flex: none;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   color: var(--color-accent);
 }
 
+.offer-card__pillar {
+  font-size: 10.5px;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* Square price tag, so the quote reads as a value rather than body copy. */
 .offer-card__price {
-  font-size: 12px;
+  margin-left: auto;
+  padding: 4px 7px;
+  border: 1px solid var(--color-border);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
   color: var(--color-text-secondary);
   white-space: nowrap;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.offer-card:hover .offer-card__price {
+  border-color: var(--color-border-emphasized);
+  color: var(--color-text-primary);
 }
 
 .offer-card__name {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.4;
+  padding: 18px 18px 0;
+  font-size: 1.25rem;
+  line-height: 1.25;
   font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.offer-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 18px;
+  padding: 10px 18px 20px;
+}
+
+.offer-card__body .p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Sitting at the bottom of the body keeps every list on the same baseline,
+   just above the footer, however long the pitch is. */
+.offer-card__gets-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.offer-card__label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  opacity: 0.8;
 }
 
 .offer-card__gets {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -685,30 +1016,52 @@ section[id],
 .offer-card__gets li::before {
   content: "";
   position: absolute;
-  top: 0.55em;
+  top: 0.6em;
   left: 0;
   width: 4px;
   height: 4px;
   border-radius: 999px;
   background: var(--color-border-emphasized);
+  transition: background-color 160ms ease;
 }
 
-/* The whole card is the link, and the label is underlined in full. */
-.offer-card__link {
+.offer-card:hover .offer-card__gets li::before {
+  background: var(--color-accent);
+}
+
+.offer-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-top: auto;
-  padding-top: 4px;
-  align-self: flex-start;
+  padding: 13px 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.offer-card__link {
   font-size: 13px;
   color: var(--color-text-primary);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  text-decoration-color: var(--color-border-emphasized);
+  transition: color 160ms ease;
 }
 
-.offer-card:hover .offer-card__link {
+.offer-card__arrow {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  color: var(--color-text-secondary);
+  transition:
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.offer-card:hover .offer-card__link,
+.offer-card:hover .offer-card__arrow {
   color: var(--color-accent);
-  text-decoration-color: var(--color-accent);
+}
+
+.offer-card:hover .offer-card__arrow {
+  transform: translateX(3px);
 }
 
 .offer-card--cta {
@@ -720,138 +1073,212 @@ section[id],
   background: var(--color-background-surface);
 }
 
-/* Demo */
-
-.demo {
-  display: grid;
-  grid-template-columns: minmax(0, 240px) minmax(0, 1fr) minmax(0, 260px);
-  gap: 24px;
-  align-items: start;
+.offer-card--cta .offer-card__icon-frame {
+  border-style: dashed;
 }
 
-.demo__column {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+@media (prefers-reduced-motion: reduce) {
+  .offer-card,
+  .offer-card__icon-frame,
+  .offer-card__price,
+  .offer-card__gets li::before,
+  .offer-card__link,
+  .offer-card__arrow {
+    transition: none;
+  }
+
+  .offer-card:hover .offer-card__arrow {
+    transform: none;
+  }
 }
 
-.demo__column-title {
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-}
+/* Client work
+   An honest empty state, set as one ledger entry instead of a third centred
+   heading. A hairline rail with an accent dot hangs down the left; the
+   statement is the heading, and the follow-up sits off to the right so the
+   panel is not a block of empty space. */
 
-.demo-piece {
-  padding: 12px 14px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-element);
-  background: var(--color-background-surface);
-  color: var(--color-text-primary);
-  font: inherit;
-  font-size: 13px;
-  text-align: left;
-  cursor: grab;
-  touch-action: none;
-}
-
-.demo-piece:hover {
-  border-color: var(--color-border-emphasized);
-}
-
-.demo-piece:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-.demo-slot {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 56px;
-  padding: 10px 14px;
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-element);
-  background: var(--color-background-surface);
-  color: var(--color-text-secondary);
-  font-size: 13px;
-}
-
-.demo-slot[data-state="running"] {
-  border-color: var(--color-accent);
-  border-style: solid;
-  color: var(--color-text-primary);
-}
-
-.demo-slot[data-state="done"] {
-  border-style: solid;
-  border-color: var(--color-border-emphasized);
-  color: var(--color-text-primary);
-}
-
-.demo-slot__index {
-  flex: none;
-  font-variant-numeric: tabular-nums;
-  color: var(--color-text-secondary);
-}
-
-.demo-connector {
-  width: 1px;
-  height: 12px;
-  margin-inline: auto;
-  background: var(--color-border);
-}
-
-.demo-crm {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px;
+.proof-panel {
+  position: relative;
+  padding: 36px 44px 40px 76px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-container);
   background: var(--color-background-surface);
-  font-size: 13px;
 }
 
-.demo-crm__row {
+.proof-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 44px;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.proof-panel__dot {
+  position: absolute;
+  top: 40px;
+  left: 41px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+
+.proof-panel__body {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--color-border);
+  flex-direction: column;
+  gap: 18px;
 }
 
-.demo-crm__row:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
+.proof-panel__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 12px 48px;
 }
 
-.demo-crm__label {
+.proof-panel__statement {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.8vw, 2.125rem);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.proof-panel__follow {
+  font-size: 1rem;
   color: var(--color-text-secondary);
 }
 
-.demo-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 24px;
+@media (max-width: 860px) {
+  .proof-panel__split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (max-width: 720px) {
+  .proof-panel {
+    padding: 28px 22px 30px 52px;
+  }
+
+  .proof-panel::before {
+    left: 28px;
+  }
+
+  .proof-panel__dot {
+    top: 32px;
+    left: 25px;
+  }
 }
 
 /* Process + pricing */
 
+/* Three steps as numbered stations. The numeral and the hairline sit on one
+   baseline so the row reads as a rail, and the dot at its end is the station. */
 .process-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.process-step__index {
+.process-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-container);
+  background: var(--color-background-surface);
+}
+
+/* On hover the hairline redraws in accent in one clockwise pass, starting just
+   past the top-left corner and ending there. The rect is inset by half its
+   stroke so it sits exactly on the card's border, and the dash is normalized
+   with pathLength, so the same rule works at any card size. No fill change. */
+.process-card__outline {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+}
+
+.process-card__outline rect {
+  x: 0.5px;
+  y: 0.5px;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+  rx: calc(var(--radius-container) - 0.5px);
+  stroke: var(--color-accent);
+  stroke-width: 1px;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.process-card:hover .process-card__outline rect {
+  stroke-dashoffset: 0;
+}
+
+.process-card__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.process-card__index {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
-  font-size: 12px;
-  letter-spacing: 0.14em;
   color: var(--color-text-secondary);
+}
+
+.process-card__rule {
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.process-card__dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-border-emphasized);
+}
+
+.process-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.process-card__body .h3 {
+  font-size: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .process-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .process-card__outline rect {
+    transition: none;
+  }
 }
 
 .starter-grid {
@@ -1235,131 +1662,115 @@ section[id],
   }
 }
 
-/* Scroll wire: fixed at the viewport edge, outside the content column. */
-
-.scroll-progress {
-  position: fixed;
-  inset-block: 0;
-  inset-inline-start: 0;
-  z-index: 60;
-  width: 2px;
-  background: var(--color-border);
-}
-
-.scroll-progress__fill {
-  position: absolute;
-  inset: 0;
-  background: var(--color-accent);
-  transform: scaleY(0);
-  transform-origin: top center;
-  will-change: transform;
-}
-
-.scroll-progress__dots {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 50%;
-  width: 0;
-}
-
-.scroll-progress__dot {
-  position: absolute;
-  left: 0;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: 0;
-  background: none;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-}
-
-.scroll-progress__dot::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-background-body);
-  border: 1px solid var(--color-border-emphasized);
-  transform: translate(-50%, -50%);
-}
-
-.scroll-progress__dot[data-active="true"]::after {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
-.scroll-progress__dot:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: 50%;
-}
-
-@media (max-width: 767px) {
-  .scroll-progress {
-    display: none;
-  }
-}
-
-
-
 @media (max-width: 900px) {
-  /* The header is two rows here, so anchors need more room above them. */
+  /* The header is one row here; the menu opens below it. */
   section[id],
   #pricing {
-    scroll-margin-top: 148px;
+    scroll-margin-top: 84px;
   }
 
-  .offer-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  /* The centre nav drops to its own row and scrolls sideways, so the CTA
-     stays visible next to the brand. */
   .site-header__inner {
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "brand actions"
-      "nav nav";
-    row-gap: 10px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
   }
 
-  .wordmark {
-    grid-area: brand;
-  }
-
-  .site-header__actions {
-    grid-area: actions;
-  }
-
-  .site-nav {
-    grid-area: nav;
-    justify-content: flex-start;
-    gap: 20px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-  }
-
-  .site-nav::-webkit-scrollbar {
+  .site-nav,
+  .site-header__actions > .nav-cta {
     display: none;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  /* The panel hangs under the sticky header, so opening it never shifts the
+     page. It fades and settles while the clip track grows from 0fr to 1fr. */
+  .site-menu {
+    display: block;
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    background: var(--color-background-body);
+    border-bottom: 1px solid var(--color-border);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition:
+      opacity 200ms ease,
+      transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 300ms;
+  }
+
+  .site-menu[data-open="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+      opacity 220ms ease,
+      transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .site-menu__clip {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .site-menu[data-open="true"] .site-menu__clip {
+    grid-template-rows: 1fr;
+  }
+
+  .site-menu__inner {
+    overflow: hidden;
+    min-height: 0;
+    padding: 4px var(--gutter) 20px;
+  }
+
+  .site-menu__nav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .site-menu__nav a {
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    color: var(--color-text-secondary);
+    font-size: 15px;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .site-menu__nav a + a {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .site-menu__nav a:hover,
+  .site-menu__nav a[aria-current="true"] {
+    color: var(--color-text-primary);
+  }
+
+  .site-menu__nav a[aria-current="true"] {
+    font-weight: 500;
+  }
+
+  .site-menu__nav a:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+  }
+
+  .nav-cta--block {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 16px;
+    padding-block: 11px;
+    font-size: 14px;
   }
 
   .pillar {
     grid-template-columns: minmax(0, 1fr);
     gap: 32px;
-  }
-
-  .demo {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 32px;
-  }
-
-  .demo__column--canvas {
-    order: 2;
   }
 }
 
@@ -1368,8 +1779,8 @@ section[id],
     padding-block: 64px;
   }
 
-  .offer-grid {
-    grid-template-columns: minmax(0, 1fr);
+  .offer-toolbar {
+    row-gap: 16px;
   }
 
   .hero {
@@ -1390,6 +1801,10 @@ section[id],
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .stepper__fill {
     transition: none;
   }

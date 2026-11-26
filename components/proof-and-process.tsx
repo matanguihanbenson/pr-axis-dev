@@ -5,12 +5,19 @@ export function Proof() {
   return (
     <section className="section" id="work">
       <div className="page-shell">
-        <div className="section-head">
-          <span className="eyebrow">Proof</span>
-          <h2 className="h2">Proof</h2>
-          <p className="p">
-            No client projects shipped yet. The first one lands here.
-          </p>
+        <div className="proof-panel">
+          <span className="proof-panel__dot" aria-hidden="true" />
+          <div className="proof-panel__body">
+            <span className="eyebrow">Client work</span>
+            <div className="proof-panel__split">
+              <h2 className="proof-panel__statement">
+                No client projects shipped yet.
+              </h2>
+              <p className="p proof-panel__follow">
+                The first one lands here.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -27,17 +34,30 @@ export function Process() {
           <p className="p">Start with what you need, one thing is enough.</p>
         </div>
 
-        <div className="process-grid">
+        <ol className="process-grid" data-reveal>
           {PROCESS_STEPS.map((step, index) => (
-            <div key={step.title} className="stack-sm">
-              <span className="process-step__index">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <h3 className="h3">{step.title}</h3>
-              <p className="p">{step.line}</p>
-            </div>
+            <li key={step.title} className="process-card">
+              <svg
+                className="process-card__outline"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <rect pathLength={1} />
+              </svg>
+              <div className="process-card__top">
+                <span className="process-card__index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="process-card__rule" aria-hidden="true" />
+                <span className="process-card__dot" aria-hidden="true" />
+              </div>
+              <div className="process-card__body">
+                <h3 className="h3">{step.title}</h3>
+                <p className="p">{step.line}</p>
+              </div>
+            </li>
           ))}
-        </div>
+        </ol>
 
         <div className="pricing-block" id="pricing">
           <div className="section-head" style={{ marginBottom: 0 }}>

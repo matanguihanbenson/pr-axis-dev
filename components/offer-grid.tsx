@@ -1,8 +1,9 @@
 "use client";
 
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { PILLARS } from "@/lib/services";
-import type { Service } from "@/lib/services";
+import type { PillarId, Service } from "@/lib/services";
 import { usePillar } from "./pillar-context";
 
 // One line-mark per service, drawn in the same hairline language as the page.
@@ -109,11 +110,56 @@ function ServiceIcon({ id }: { id: string }) {
   );
 }
 
+type FilterId = "all" | PillarId;
+
+const FILTERS: { id: FilterId; label: string }[] = [
+  { id: "all", label: "All" },
+  ...PILLARS.map((pillar) => ({ id: pillar.id, label: pillar.label })),
+];
+
 export function OfferGrid() {
   const { selectService } = usePillar();
+  const [filter, setFilter] = useState<FilterId>("all");
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
 
-  const openInPillar = (pillarId: string, serviceId: string) => {
-    selectService(pillarId as never, serviceId);
+  const syncEdges = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    setAtStart(track.scrollLeft <= 1);
+    setAtEnd(track.scrollLeft + track.clientWidth >= track.scrollWidth - 1);
+  }, []);
+
+  // A narrower filter means fewer cards, which can make the track fit again.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (track) track.scrollLeft = 0;
+    const frame = requestAnimationFrame(syncEdges);
+    return () => cancelAnimationFrame(frame);
+  }, [filter, syncEdges]);
+
+  useEffect(() => {
+    syncEdges();
+    window.addEventListener("resize", syncEdges);
+    return () => window.removeEventListener("resize", syncEdges);
+  }, [syncEdges]);
+
+  const step = (direction: -1 | 1) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.querySelector<HTMLElement>(".offer-card");
+    const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 16;
+    const distance = card ? card.getBoundingClientRect().width + gap : track.clientWidth;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    track.scrollBy({
+      left: direction * distance,
+      behavior: reduce ? "auto" : "smooth",
+    });
+  };
+
+  const openInPillar = (pillarId: PillarId, serviceId: string) => {
+    selectService(pillarId, serviceId);
     const target = document.getElementById("services");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     target?.scrollIntoView({
@@ -122,7 +168,7 @@ export function OfferGrid() {
     });
   };
 
-  const card = (pillarId: string, service: Service) => (
+  const card = (pillarId: PillarId, pillarLabel: string, service: Service) => (
     <a
       key={`${pillarId}-${service.id}`}
       className="offer-card"
@@ -133,28 +179,31 @@ export function OfferGrid() {
       }}
     >
       <span className="offer-card__top">
-        <ServiceIcon id={service.id} />
+        <span className="offer-card__icon-frame">
+          <ServiceIcon id={service.id} />
+        </span>
+        <span className="offer-card__pillar">{pillarLabel}</span>
         <span className="offer-card__price">
           {service.startingPrice ?? "Custom quote"}
         </span>
       </span>
       <h4 className="offer-card__name">{service.name}</h4>
-      <p className="p">{service.summary}</p>
-      <ul className="offer-card__gets">
-        {service.gets.slice(0, 3).map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-      <span className="offer-card__link">See details</span>
-    </a>
-  );
-
-  const ctaCard = (
-    <a className="offer-card offer-card--cta" href="#contact">
-      <span className="offer-card__top">
+      <span className="offer-card__body">
+        <p className="p">{service.summary}</p>
+        <div className="offer-card__gets-block">
+          <span className="offer-card__label">What you get</span>
+          <ul className="offer-card__gets">
+            {service.gets.slice(0, 3).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </span>
+      <span className="offer-card__foot">
+        <span className="offer-card__link">See details</span>
         <svg
-          className="offer-card__icon"
-          viewBox="0 0 16 16"
+          className="offer-card__arrow"
+          viewBox="0 0 12 12"
           aria-hidden="true"
           focusable="false"
           fill="none"
@@ -163,33 +212,132 @@ export function OfferGrid() {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M8 3v10M3 8h10" />
+          <path d="M2 6h7.5M6.5 3l3 3-3 3" />
         </svg>
       </span>
-      <h4 className="offer-card__name">Not sure yet?</h4>
-      <p className="p">Tell us what you need and we will take it from there.</p>
-      <span className="offer-card__link">Go to the form</span>
     </a>
   );
 
-  // One column per pillar, each carrying its own service count. Build holds
-  // four services plus the CTA card, so all three columns end together.
+  const ctaCard = (
+    <a className="offer-card offer-card--cta" href="#contact">
+      <span className="offer-card__top">
+        <span className="offer-card__icon-frame">
+          <svg
+            className="offer-card__icon"
+            viewBox="0 0 16 16"
+            aria-hidden="true"
+            focusable="false"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M8 3v10M3 8h10" />
+          </svg>
+        </span>
+        <span className="offer-card__pillar">Any service</span>
+      </span>
+      <h4 className="offer-card__name">Not sure yet?</h4>
+      <span className="offer-card__body">
+        <p className="p">Tell us what you need and we will take it from there.</p>
+      </span>
+      <span className="offer-card__foot">
+        <span className="offer-card__link">Go to the form</span>
+        <svg
+          className="offer-card__arrow"
+          viewBox="0 0 12 12"
+          aria-hidden="true"
+          focusable="false"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M2 6h7.5M6.5 3l3 3-3 3" />
+        </svg>
+      </span>
+    </a>
+  );
+
+  const visible = PILLARS.filter(
+    (pillar) => filter === "all" || pillar.id === filter,
+  ).flatMap((pillar) =>
+    pillar.services.map((service) => card(pillar.id, pillar.label, service)),
+  );
+
   return (
-    <div className="offer-grid">
-      {PILLARS.map((pillar) => (
-        <div className="offer-column" key={pillar.id}>
-          <div className="offer-group">
-            <h3 className="offer-group__title">{pillar.label}</h3>
-            <span className="offer-group__meta">
-              {pillar.services.length} services
-            </span>
-          </div>
-          <div className="offer-column__cards">
-            {pillar.services.map((service) => card(pillar.id, service))}
-            {pillar.id === "build" ? ctaCard : null}
-          </div>
+    <div className="offer">
+      <div className="offer-toolbar">
+        <div className="offer-filters" role="group" aria-label="Filter services">
+          {FILTERS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className="offer-filter"
+              aria-pressed={filter === item.id}
+              onClick={() => setFilter(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
-      ))}
+
+        <div className="offer-controls">
+          <button
+            type="button"
+            className="offer-control"
+            aria-label="Previous services"
+            onClick={() => step(-1)}
+            disabled={atStart}
+          >
+            <svg
+              viewBox="0 0 12 12"
+              aria-hidden="true"
+              focusable="false"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.25"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7.5 2 3.5 6l4 4" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="offer-control"
+            aria-label="Next services"
+            onClick={() => step(1)}
+            disabled={atEnd}
+          >
+            <svg
+              viewBox="0 0 12 12"
+              aria-hidden="true"
+              focusable="false"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.25"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M4.5 2 8.5 6l-4 4" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div
+        className="offer-track"
+        ref={trackRef}
+        onScroll={syncEdges}
+        role="region"
+        aria-label="Services"
+      >
+        {visible}
+        {ctaCard}
+      </div>
     </div>
   );
 }

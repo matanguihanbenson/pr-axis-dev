@@ -90,8 +90,6 @@ components/
   pillar-context.tsx  shared pillar/service state + #design/#build/#automate
   pillar-explorer.tsx stepper + list/detail switcher
   offer-grid.tsx    every service, always visible
-  scroll-progress.tsx  fixed scroll wire + pillar dots (GSAP ScrollTrigger)
-  workflow-demo.tsx interactive demo (Motion drag, GSAP run)
   proof-and-process.tsx  honest proof state, process, starters
   contact-form.tsx  inquiry form (Clarity-masked)
   site-footer.tsx   Clarity disclosure

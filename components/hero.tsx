@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@astryxdesign/core/Button";
 import {
   CELL,
@@ -12,11 +12,65 @@ import {
 // How much of the current line is lit at once.
 const DASH = 96;
 
+// The hero line that cycles. "We" stays put; only the rest is typed.
+const PHRASES = ["design it.", "build it.", "automate it."];
+const TYPE_MS = 60;
+const HOLD_MS = 1500;
+const DELETE_MS = 30;
+const PAUSE_MS = 320;
+
+type Phase = "typing" | "holding" | "deleting" | "pausing";
+
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const leadRef = useRef<HTMLSpanElement>(null);
+  const rotatorRef = useRef<HTMLSpanElement>(null);
   const restRef = useRef<HTMLDivElement>(null);
   const laneRefs = useRef<(SVGPathElement | null)[]>([]);
+
+  const [phrase, setPhrase] = useState(0);
+  const [count, setCount] = useState(PHRASES[0].length);
+  const [phase, setPhase] = useState<Phase>("holding");
+
+  // Type a phrase, hold it, delete it, then move to the next one. Every
+  // character keeps its slot, so the line never reflows as it is typed;
+  // only its opacity, blur and position change. Reduced motion parks on the
+  // first phrase with a still caret.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const length = PHRASES[phrase].length;
+
+    if (phase === "typing") {
+      if (count >= length) {
+        const done = window.setTimeout(() => setPhase("holding"), 0);
+        return () => window.clearTimeout(done);
+      }
+      const timer = window.setTimeout(() => setCount(count + 1), TYPE_MS);
+      return () => window.clearTimeout(timer);
+    }
+
+    if (phase === "holding") {
+      const timer = window.setTimeout(() => setPhase("deleting"), HOLD_MS);
+      return () => window.clearTimeout(timer);
+    }
+
+    if (phase === "deleting") {
+      if (count > 0) {
+        const timer = window.setTimeout(() => setCount(count - 1), DELETE_MS);
+        return () => window.clearTimeout(timer);
+      }
+      const paused = window.setTimeout(() => setPhase("pausing"), 0);
+      return () => window.clearTimeout(paused);
+    }
+
+    // Pausing: the line is empty and the caret rests, then the next phrase
+    // starts with no visible jump between the two widths.
+    const timer = window.setTimeout(() => {
+      setPhrase((current) => (current + 1) % PHRASES.length);
+      setPhase("typing");
+    }, PAUSE_MS);
+    return () => window.clearTimeout(timer);
+  }, [count, phase, phrase]);
 
   useEffect(() => {
     // The grid sits under the text column below 1024px, and this is decoration.
@@ -153,17 +207,24 @@ export function Hero() {
           import("gsap"),
           import("gsap/SplitText"),
         ]);
-        if (cancelled || !titleRef.current) return;
+        if (cancelled || !leadRef.current || !rotatorRef.current) return;
         gsap.registerPlugin(SplitText);
 
         context = gsap.context(() => {
-          const split = new SplitText(titleRef.current, { type: "words" });
+          const split = new SplitText(leadRef.current, { type: "words" });
           gsap.from(split.words, {
             opacity: 0,
             y: 18,
             duration: 0.6,
             ease: "power3.out",
             stagger: 0.05,
+          });
+          gsap.from(rotatorRef.current, {
+            opacity: 0,
+            y: 12,
+            duration: 0.6,
+            delay: 0.35,
+            ease: "power3.out",
           });
           gsap.from(restRef.current, {
             opacity: 0,
@@ -205,8 +266,35 @@ export function Hero() {
       </div>
 
       <div className="page-shell hero__inner">
-        <h1 className="h1" ref={titleRef}>
-          You bring the idea. We design it, build it, and automate it.
+        <h1 className="h1 hero__title">
+          <span className="hero__title-lead" ref={leadRef}>
+            You bring the idea.
+          </span>
+          <span className="hero__rotator" ref={rotatorRef} aria-hidden="true">
+            <span className="hero__rotator-we">We</span>
+            <span className="hero__typed">
+              {[...PHRASES[phrase]].map((char, index) => (
+                <span
+                  key={`${phrase}-${index}`}
+                  className="hero__typed-char"
+                  data-visible={index < count}
+                  style={{ order: index < count ? index : index + 1 }}
+                >
+                  {char === " " ? "\u00A0" : char}
+                </span>
+              ))}
+              {phase !== "pausing" && (
+                <span
+                  className="hero__caret"
+                  data-busy={phase !== "holding"}
+                  style={{ order: count }}
+                />
+              )}
+            </span>
+          </span>
+          <span className="visually-hidden">
+            We design it, build it, and automate it.
+          </span>
         </h1>
         <div ref={restRef} className="stack-md">
           <p className="p p--large">

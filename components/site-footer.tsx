@@ -1,14 +1,10 @@
+import { PILLARS } from "@/lib/services";
+import { FooterPillarLink } from "./footer-pillar-link";
+
 const SECTIONS = [
   { href: "#services", label: "Start with what you need" },
   { href: "#offer", label: "What we offer" },
-  { href: "#demo", label: "Watch one workflow" },
   { href: "#contact", label: "Work with us" },
-];
-
-const PILLARS = [
-  { href: "#services", label: "Design" },
-  { href: "#services", label: "Build" },
-  { href: "#services", label: "Automate" },
 ];
 
 function Arrow({ className }: { className: string }) {
@@ -65,10 +61,12 @@ export function SiteFooter() {
 
           <nav className="site-footer__col" aria-label="Pillars">
             <span className="eyebrow">Pillars</span>
-            {PILLARS.map((item) => (
-              <a key={item.label} className="site-footer__link" href={item.href}>
-                {item.label}
-              </a>
+            {PILLARS.map((pillar) => (
+              <FooterPillarLink
+                key={pillar.id}
+                id={pillar.id}
+                label={pillar.label}
+              />
             ))}
             <a className="site-footer__link" href="https://pr-axisdev.com/">
               pr-axisdev.com
