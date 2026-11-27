@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { PILLARS } from "@/lib/services";
+import { formatMoney, PILLARS } from "@/lib/services";
 import type { PillarId, Service } from "@/lib/services";
 import { usePillar } from "./pillar-context";
 
@@ -25,16 +25,10 @@ const ICONS: Record<string, ReactNode> = {
       <path d="M8 2.5v11M2.5 8h11M4.2 4.2l7.6 7.6M11.8 4.2 4.2 11.8" />
     </>
   ),
-  video: (
+  redesign: (
     <>
-      <rect x="2" y="4" width="12" height="8" rx="1.5" />
-      <path d="M6.8 6.4 9.6 8l-2.8 1.6z" />
-    </>
-  ),
-  audit: (
-    <>
-      <circle cx="7" cy="7" r="3.6" />
-      <path d="M9.9 9.9 13.5 13.5" />
+      <path d="M2.8 8a5.2 5.2 0 1 1 1.5 3.7" />
+      <path d="M2.5 4.6v3.6h3.6" />
     </>
   ),
   websites: (
@@ -184,7 +178,7 @@ export function OfferGrid() {
         </span>
         <span className="offer-card__pillar">{pillarLabel}</span>
         <span className="offer-card__price">
-          {service.startingPrice ?? "Custom quote"}
+          from {formatMoney(service.price.from)}
         </span>
       </span>
       <h4 className="offer-card__name">{service.name}</h4>
@@ -261,6 +255,51 @@ export function OfferGrid() {
     </a>
   );
 
+  const somethingElseCard = (
+    <a className="offer-card offer-card--cta" href="#contact">
+      <span className="offer-card__top">
+        <span className="offer-card__icon-frame">
+          <svg
+            className="offer-card__icon"
+            viewBox="0 0 16 16"
+            aria-hidden="true"
+            focusable="false"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M3 13 13 3M6 3h7v7" />
+          </svg>
+        </span>
+        <span className="offer-card__pillar">Custom work</span>
+      </span>
+      <h4 className="offer-card__name">Something else?</h4>
+      <span className="offer-card__body">
+        <p className="p">
+          Tell us what you have in mind and we will scope it with you.
+        </p>
+      </span>
+      <span className="offer-card__foot">
+        <span className="offer-card__link">Go to the form</span>
+        <svg
+          className="offer-card__arrow"
+          viewBox="0 0 12 12"
+          aria-hidden="true"
+          focusable="false"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M2 6h7.5M6.5 3l3 3-3 3" />
+        </svg>
+      </span>
+    </a>
+  );
+
   const visible = PILLARS.filter(
     (pillar) => filter === "all" || pillar.id === filter,
   ).flatMap((pillar) =>
@@ -304,6 +343,7 @@ export function OfferGrid() {
             >
               <path d="M7.5 2 3.5 6l4 4" />
             </svg>
+            <span className="offer-control__label">Prev</span>
           </button>
           <button
             type="button"
@@ -312,6 +352,7 @@ export function OfferGrid() {
             onClick={() => step(1)}
             disabled={atEnd}
           >
+            <span className="offer-control__label">Next</span>
             <svg
               viewBox="0 0 12 12"
               aria-hidden="true"
@@ -337,6 +378,7 @@ export function OfferGrid() {
       >
         {visible}
         {ctaCard}
+        {somethingElseCard}
       </div>
     </div>
   );

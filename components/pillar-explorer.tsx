@@ -1,14 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { LazyMotion, m, useReducedMotion } from "motion/react";
 import { Button } from "@astryxdesign/core/Button";
-import { PILLARS, type PillarId } from "@/lib/services";
+import { PILLARS, formatServicePrice, type PillarId } from "@/lib/services";
 import { usePillar } from "./pillar-context";
-
-// The DOM animation feature set is fetched after hydration, not with first paint.
-const loadMotionFeatures = () =>
-  import("motion/react").then((mod) => mod.domAnimation);
 
 const SPARK_WIDTH = 24;
 // Spark travel time. The destination outline starts drawing as it lands.
@@ -46,7 +41,6 @@ function outlineHalves(width: number, height: number, radius: number) {
 export function PillarExplorer() {
   const { pillarId, serviceId, setPillar, selectService, startWithService } =
     usePillar();
-  const reduceMotion = useReducedMotion();
 
   const stepperRef = useRef<HTMLDivElement>(null);
   const sparkRef = useRef<HTMLSpanElement>(null);
@@ -57,6 +51,13 @@ export function PillarExplorer() {
   const previousPillar = useRef<PillarId | null>(null);
   // Which border is currently lit: follows pillarId, a beat behind the spark.
   const [lit, setLit] = useState<PillarId>(pillarId);
+
+  const serviceListRef = useRef<HTMLDivElement>(null);
+  // Vertical centre of the chosen service row, in the list's coordinates.
+  const [markerY, setMarkerY] = useState<number | null>(null);
+  // The neighbouring ticks only stretch while the marker is travelling.
+  const [moving, setMoving] = useState(false);
+  const seenService = useRef(false);
 
   const pillar = PILLARS.find((item) => item.id === pillarId) ?? PILLARS[0];
   const service =
@@ -144,6 +145,62 @@ export function PillarExplorer() {
     };
   }, []);
 
+  // Keep the long tick on the chosen service through resizes and late
+  // webfonts. One marker moves between rows, so the swap reads as a single
+  // continuous motion rather than a blink between two states.
+  useEffect(() => {
+    const list = serviceListRef.current;
+    if (!list) return;
+
+    const place = () => {
+      const active = list.querySelector<HTMLElement>(
+        '.service-option[aria-pressed="true"]',
+      );
+      if (!active) return;
+      setMarkerY(active.offsetTop + active.offsetHeight / 2);
+    };
+
+    place();
+    const observer = new ResizeObserver(place);
+    observer.observe(list);
+    list
+      .querySelectorAll<HTMLElement>(".service-option")
+      .forEach((row) => observer.observe(row));
+    window.addEventListener("resize", place);
+    // The list flips between a vertical ruler and a horizontal carousel.
+    const layout = window.matchMedia("(max-width: 900px)");
+    layout.addEventListener("change", place);
+    void document.fonts?.ready.then(place);
+    // A pillar switch mounts a new list; settle once the rows have layout.
+    let frame = 0;
+    const settle = () => {
+      frame = window.requestAnimationFrame(() => {
+        frame = window.requestAnimationFrame(place);
+      });
+    };
+    settle();
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", place);
+      layout.removeEventListener("change", place);
+    };
+  }, [pillar, service.id]);
+
+  // Stretch the ticks that touch the marker while it travels, then let them
+  // settle back once it lands on the new row.
+  useEffect(() => {
+    if (!seenService.current) {
+      seenService.current = true;
+      return;
+    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setMoving(true);
+    const timer = window.setTimeout(() => setMoving(false), 470);
+    return () => window.clearTimeout(timer);
+  }, [service.id]);
+
   // Send a spark down the rail from the old pad to the new one.
   useEffect(() => {
     const from = previousPillar.current;
@@ -179,6 +236,116 @@ export function PillarExplorer() {
     return () => animation.cancel();
   }, [pillarId]);
 
+  // On small screens the list is a horizontal carousel: keep the chosen
+  // service centred, with the strip scrolling under it.
+  useEffect(() => {
+    const list = serviceListRef.current;
+    if (!list) return;
+
+    const layout = window.matchMedia("(max-width: 900px)");
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const center = (behavior: ScrollBehavior) => {
+      if (!layout.matches) return;
+      const active = list.querySelector<HTMLElement>(
+        '.service-option[aria-pressed="true"]',
+      );
+      if (!active) return;
+      const target =
+        active.offsetLeft + active.offsetWidth / 2 - list.clientWidth / 2;
+      list.scrollTo({ left: Math.max(0, target), behavior });
+    };
+    const glide = () => center(reduce ? "auto" : "smooth");
+
+    const frame = window.requestAnimationFrame(glide);
+    // The chosen row grows a little, so settle once that size has landed.
+    const settle = window.setTimeout(glide, 260);
+    // A breakpoint switch reflows the strip: jump straight to the centre.
+    const onLayoutChange = () => center("instant");
+    layout.addEventListener("change", onLayoutChange);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(settle);
+      layout.removeEventListener("change", onLayoutChange);
+    };
+  }, [service.id, pillar]);
+
+  // Dragging the strip until an item sits under the middle of the ruler makes
+  // that service active, so a swipe and a tap end in the same place.
+  useEffect(() => {
+    const list = serviceListRef.current;
+    if (!list) return;
+    const layout = window.matchMedia("(max-width: 900px)");
+
+    const pickCentred = () => {
+      if (!layout.matches) return;
+      const middle = list.scrollLeft + list.clientWidth / 2;
+      const rows = Array.from(
+        list.querySelectorAll<HTMLElement>(".service-option"),
+      );
+      let closest: HTMLElement | null = rows[0] ?? null;
+      let distance = Infinity;
+      for (const row of rows) {
+        const next = Math.abs(row.offsetLeft + row.offsetWidth / 2 - middle);
+        if (next < distance) {
+          distance = next;
+          closest = row;
+        }
+      }
+      const id = closest?.dataset.serviceId;
+      if (id && id !== service.id) selectService(pillar.id, id);
+    };
+
+    let timer = 0;
+    const onScroll = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(pickCentred, 160);
+    };
+
+    list.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.clearTimeout(timer);
+      list.removeEventListener("scroll", onScroll);
+    };
+  }, [pillar, service.id, selectService]);
+
+  // Extend each ruler line in turn as the blue tick sweeps past it, then let
+  // it fall back to its normal width a beat later. Lines further along the
+  // path start later, so the extensions travel with the blue tick.
+  const playTrail = (from: number | null, to: number) => {
+    if (from === null || from === to) return;
+    if (window.matchMedia("(max-width: 900px)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const list = serviceListRef.current;
+    if (!list) return;
+
+    const span = to - from;
+    list.querySelectorAll<HTMLElement>(".service-list__tick").forEach((tick) => {
+      const progress = (Number(tick.dataset.y ?? 0) - from) / span;
+      // The two lines touching the resting blue tick are the marker's own.
+      if (progress <= 0.02 || progress >= 1) return;
+
+      const base = tick.dataset.major === "true" ? 13 : 7;
+      tick.getAnimations().forEach((animation) => animation.cancel());
+      tick.animate(
+        [
+          { width: `${base}px` },
+          { width: "16px", offset: 0.45 },
+          { width: "16px", offset: 0.62 },
+          { width: `${base}px` },
+        ],
+        {
+          duration: 280,
+          delay: progress * 380,
+          easing: "ease-in-out",
+        },
+      );
+    });
+  };
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const index = PILLARS.findIndex((item) => item.id === pillarId);
     let next = index;
@@ -194,7 +361,7 @@ export function PillarExplorer() {
   };
 
   return (
-    <LazyMotion features={loadMotionFeatures}>
+    <>
       <div className="stepper" ref={stepperRef}>
         <span className="stepper__rail" aria-hidden="true">
           <span className="stepper__spark" ref={sparkRef} />
@@ -253,51 +420,100 @@ export function PillarExplorer() {
         </div>
       </div>
 
-      {/* A keyed enter animation swaps instantly on interrupt, so the panel can
-          never show the previous pillar or service. */}
-      <m.div
+      {/* Keyed, so the CSS enter animation swaps instantly on interrupt and
+          the panel can never show the previous pillar or service. */}
+      <div
         key={pillar.id}
         id={`${pillar.id}-panel`}
         role="tabpanel"
         aria-labelledby={`${pillar.id}-tab`}
-        initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.28, ease: "easeOut" }}
+        className="pillar-panel"
       >
         <div className="pillar__intro">
+          {pillar.panelNote ? (
+            <p className="p p--strong">{pillar.panelNote}</p>
+          ) : null}
           <p className="p">{pillar.intro}</p>
         </div>
 
         <div className="pillar">
-          <div
-            className="service-list"
-            role="group"
-            aria-label={`${pillar.label} services`}
-          >
+          <div className="service-carousel">
+            <span className="service-list__ruler" aria-hidden="true" />
+            <span className="service-list__carriage" aria-hidden="true">
+              <span className="service-list__carriage-neighbor service-list__carriage-neighbor--left" />
+              <span className="service-list__carriage-neighbor service-list__carriage-neighbor--right" />
+            </span>
+            <div
+              className="service-list"
+              ref={serviceListRef}
+              role="group"
+              aria-label={`${pillar.label} services`}
+            >
+            <span className="service-list__scale" aria-hidden="true">
+              {Array.from(
+                { length: pillar.services.length * 6 },
+                (_, index) => (
+                  <span
+                    key={index}
+                    className="service-list__tick"
+                    data-major={index % 6 === 0}
+                    data-y={index * 8}
+                    style={{ top: index * 8 }}
+                  />
+                ),
+              )}
+            </span>
+            <span
+              className="service-list__aura"
+              aria-hidden="true"
+              data-ready={markerY !== null}
+              data-moving={moving}
+              style={
+                markerY === null
+                  ? undefined
+                  : { transform: `translateY(${markerY}px)` }
+              }
+            >
+              <span className="service-list__step service-list__step--up" />
+              <span className="service-list__step service-list__step--down" />
+            </span>
+            <span
+              className="service-list__marker"
+              aria-hidden="true"
+              data-ready={markerY !== null}
+              style={
+                markerY === null
+                  ? undefined
+                  : { transform: `translateY(${markerY - 1}px)` }
+              }
+            />
             {pillar.services.map((item) => (
               <button
                 key={item.id}
                 type="button"
                 className="service-option"
+                data-service-id={item.id}
                 aria-pressed={item.id === service.id}
-                onClick={() => selectService(pillar.id, item.id)}
+                onClick={(event) => {
+                  const row = event.currentTarget;
+                  playTrail(markerY, row.offsetTop + row.offsetHeight / 2);
+                  selectService(pillar.id, item.id);
+                }}
               >
-                <span className="service-option__marker" aria-hidden="true" />
                 {item.name}
               </button>
             ))}
+            </div>
           </div>
 
           <div className="service-detail">
-            <m.div
-              key={service.id}
-              initial={reduceMotion ? false : { opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className="stack-md"
-            >
+            <div key={service.id} className="stack-md service-detail__body">
               <h3 className="h3">{service.name}</h3>
               <p className="p">{service.summary}</p>
+              <p className="service-detail__price">
+                {formatServicePrice(service)}
+                {service.note ? `, ${service.note.toLowerCase()}` : null}
+              </p>
               <ul className="service-detail__list">
                 {service.gets.map((item) => (
                   <li key={item}>
@@ -316,10 +532,11 @@ export function PillarExplorer() {
                   onClick={() => startWithService(pillar.id, service.id)}
                 />
               </div>
-            </m.div>
+            </div>
           </div>
+
         </div>
-      </m.div>
-    </LazyMotion>
+      </div>
+    </>
   );
 }

@@ -1,28 +1,4 @@
-import { Card } from "@astryxdesign/core/Card";
-import { PROCESS_STEPS, STARTERS } from "@/lib/services";
-
-export function Proof() {
-  return (
-    <section className="section" id="work">
-      <div className="page-shell">
-        <div className="proof-panel">
-          <span className="proof-panel__dot" aria-hidden="true" />
-          <div className="proof-panel__body">
-            <span className="eyebrow">Client work</span>
-            <div className="proof-panel__split">
-              <h2 className="proof-panel__statement">
-                No client projects shipped yet.
-              </h2>
-              <p className="p proof-panel__follow">
-                The first one lands here.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+import { PROCESS_STEPS } from "@/lib/services";
 
 export function Process() {
   return (
@@ -58,28 +34,6 @@ export function Process() {
             </li>
           ))}
         </ol>
-
-        <div className="pricing-block" id="pricing">
-          <div className="section-head" style={{ marginBottom: 0 }}>
-            <h3 className="h3">Starter prices</h3>
-            <p className="p">
-              Fixed prices for the smallest version of each service. Anything
-              bigger gets a custom quote once we&apos;ve seen what you need.
-            </p>
-          </div>
-
-          <div className="starter-grid">
-            {STARTERS.map((starter) => (
-              <Card key={starter.name} padding={4}>
-                <div className="stack-sm">
-                  <h4 className="h4">{starter.name}</h4>
-                  <span className="starter__price">{starter.price}</span>
-                  <p className="p">{starter.line}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );

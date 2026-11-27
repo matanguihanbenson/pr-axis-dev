@@ -19,15 +19,17 @@ export function FooterPillarLink({
   return (
     <a
       className="site-footer__link"
-      href={`#${id}`}
+      href={`/#${id}`}
       onClick={(event) => {
+        const target = document.getElementById("services");
+        // On a page without the section (a demo), let the link navigate home.
+        if (!target) return;
         event.preventDefault();
         setPillar(id);
-        const target = document.getElementById("services");
         const reduce = window.matchMedia(
           "(prefers-reduced-motion: reduce)",
         ).matches;
-        target?.scrollIntoView({
+        target.scrollIntoView({
           behavior: reduce ? "auto" : "smooth",
           block: "start",
         });

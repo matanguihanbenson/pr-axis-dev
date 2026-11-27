@@ -1,0 +1,516 @@
+{
+  "generated_at": "2026-11-26T19:53:05.027Z",
+  "source": "https://pr-axis-kb-api-matanguihanbensons-projects.vercel.app/api/kb",
+  "entries": [
+    {
+      "id": "service-ui-ux-design",
+      "topic": "services",
+      "title": "UI/UX Design",
+      "keywords": [
+        "ui",
+        "ux",
+        "design",
+        "screens",
+        "figma",
+        "layout",
+        "user experience"
+      ],
+      "answer": "UI/UX Design is for visitors who land on your site or app and leave because they cannot find what they need, or because it looks like it was built years ago. It is the screens, flows, and layout redesigned around what a visitor is actually trying to do, delivered as a clickable Figma design to approve before anything is built. You get every screen mapped to the visitor's goal, and layouts that work on a phone first, then scale up to desktop. Range: $600 to $1,500. What moves the price: number of screens (5 vs 20+), flows, design system.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-graphics-design",
+      "topic": "services",
+      "title": "Graphics Design",
+      "keywords": [
+        "graphics",
+        "graphic design",
+        "assets",
+        "posts",
+        "ads",
+        "social"
+      ],
+      "answer": "Graphics Design is for a business whose posts, ads, and decks all look like they came from different companies. It is a set of designed assets with one consistent look, in the formats needed to use them. You get one consistent look across social, print, and product graphics, and a visual style that still looks like you a year from now. Range: $250 to $800. What moves the price: number of assets (10 vs 40+).",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-brand-design",
+      "topic": "services",
+      "title": "Brand Design",
+      "keywords": [
+        "brand",
+        "branding",
+        "logo",
+        "identity",
+        "colors",
+        "type"
+      ],
+      "answer": "Brand Design is for a new business that needs to look like a real company from day one, or one whose look no longer fits what it sells. It is a logo set, colors, type, and simple usage rules, so anyone can keep the brand consistent. You get a logo set that holds up at any size, from favicon to signage, and colors and type chosen to work together, not picked one by one. Range: $400 to $1,200. What moves the price: logo only vs full identity plus guide.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-redesign",
+      "topic": "services",
+      "title": "Redesign",
+      "keywords": [
+        "redesign",
+        "audit",
+        "makeover",
+        "refresh",
+        "dated",
+        "website redesign"
+      ],
+      "answer": "Redesign is for a business with a website or system that looks dated, confuses visitors, or no longer fits, and that wants a fresh makeover without starting from zero. First, a free audit of the site or system (what confuses visitors, what is broken, what is costing inquiries), then a full redesign, new screens and flows, giving it a fresh makeover. You get the free audit report, ranked by impact, new screens and flows, and the redesign handed over ready to build. Range: $800 to $2,500, audit free. What moves the price: pages or screens (5 vs 20+). This replaces the old Design Audit.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-websites",
+      "topic": "services",
+      "title": "Websites",
+      "keywords": [
+        "website",
+        "site",
+        "web design",
+        "one-page",
+        "landing page",
+        "business website"
+      ],
+      "answer": "Websites are for a business that is invisible online, or whose site gets visitors but no inquiries. It is a fast site that says what you do in the first screen, with a clear path from visitor to inquiry on every page. You get a site built search-ready, with the titles and descriptions in place. Range: $500 to $2,000. A one-page website starts at $500. What moves the price: pages (1 vs 10+).",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-web-apps",
+      "topic": "services",
+      "title": "Web Apps",
+      "keywords": [
+        "web app",
+        "web application",
+        "dashboard",
+        "portal",
+        "internal tool",
+        "platform"
+      ],
+      "answer": "Web Apps are for a team doing real work in spreadsheets, chats, and five open tabs. It is a working tool in the browser, a dashboard, a portal, or an internal tool, built around the team's actual workflow, usable on day one, not just looked at. Range: $1,500 to $5,000. What moves the price: features, roles, integrations.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-mobile-apps",
+      "topic": "services",
+      "title": "Mobile Apps",
+      "keywords": [
+        "mobile app",
+        "app",
+        "ios",
+        "android",
+        "flutter",
+        "phone"
+      ],
+      "answer": "Mobile Apps are for a business whose customers live on their phones and need the service in their pocket. It is one Flutter codebase for iOS and Android, designed for one-handed real-life use, app-store-ready. Range: $1,800 to $5,000. What moves the price: features, screens, store setup.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-systems",
+      "topic": "services",
+      "title": "Systems",
+      "keywords": [
+        "system",
+        "systems",
+        "workflow",
+        "operations",
+        "source of truth",
+        "internal system"
+      ],
+      "answer": "Systems are for a business where the work lives in people's heads, spreadsheets, and chats, and nothing is in one place. It is one source of truth with the team's workflow built in, handed over with a walkthrough. Range: $1,200 to $4,000. What moves the price: workflows, data, users.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-lead-capture",
+      "topic": "services",
+      "title": "Lead Capture Agent",
+      "keywords": [
+        "lead capture",
+        "leads",
+        "inquiries",
+        "inquiry",
+        "lead agent",
+        "capture"
+      ],
+      "answer": "The Lead Capture Agent is for a business losing inquiries between inbox, form, and chat, and only finding out days later. It is an agent that catches every inquiry and puts it in one place, the moment it arrives, each lead logged with where it came from. Range: $400 to $900. One automation starts at $400. What moves the price: channels (1 vs 4+).",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-follow-up",
+      "topic": "services",
+      "title": "Follow-up Agent",
+      "keywords": [
+        "follow-up",
+        "follow up",
+        "leads",
+        "nurture",
+        "reminders"
+      ],
+      "answer": "The Follow-up Agent is for a business whose leads go cold because no one follows up in time. It is an agent that sends the right follow-up at the right time, and logs every one, so no inquiry goes unanswered. Range: $400 to $900. What moves the price: sequences (1 vs 3+), channels.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-data-research",
+      "topic": "services",
+      "title": "Data & Research Agent",
+      "keywords": [
+        "data",
+        "research",
+        "market",
+        "brief",
+        "analysis"
+      ],
+      "answer": "The Data & Research Agent is for a business that needs a brief on a lead or a market, not a pile of open tabs. It is an agent that gathers the facts that matter for the decision, with sources noted so anything can be checked. Range: $400 to $1,000. What moves the price: sources, depth, frequency.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-reporting",
+      "topic": "services",
+      "title": "Reporting Agent",
+      "keywords": [
+        "reporting",
+        "reports",
+        "summary",
+        "weekly",
+        "analytics"
+      ],
+      "answer": "The Reporting Agent is for a business that opens five tools to answer one question. It is a short weekly summary, what happened, what matters, what is next, same shape every week. Range: $400 to $900. What moves the price: reports, data sources, frequency.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "service-crm-insights",
+      "topic": "services",
+      "title": "CRM & Insights Agent",
+      "keywords": [
+        "crm",
+        "insights",
+        "records",
+        "customers",
+        "sales",
+        "pipeline"
+      ],
+      "answer": "The CRM & Insights Agent is for a business whose records are messy and that cannot see what is falling through. It is an agent that keeps records clean, logs every interaction, and lists what needs a follow-up. Range: $500 to $1,200. What moves the price: records, integrations, insights.",
+      "source": "services-draft §2"
+    },
+    {
+      "id": "package-launch",
+      "topic": "packages",
+      "title": "Launch Package",
+      "keywords": [
+        "launch",
+        "launch package",
+        "starter",
+        "new business",
+        "start"
+      ],
+      "answer": "The Launch Package is for a new business that needs to exist online and start getting customers this month, not next quarter. Inside: Brand Design ($400), one-page Website ($500), Lead Capture Agent ($400). Individual total: $1,300. Bundle: $1,050. You save $250. Demo: /launch. Add-ons: extra website page, $150 per page; Follow-up Agent, $400; Social Media Kit Package, $450.",
+      "source": "services-draft §3"
+    },
+    {
+      "id": "package-branding",
+      "topic": "packages",
+      "title": "Branding Package",
+      "keywords": [
+        "branding",
+        "branding package",
+        "brand package",
+        "logo package"
+      ],
+      "answer": "The Branding Package is for a business that wants a brand it can actually use from day one, not a logo file that sits in a folder. Inside: Brand Design ($400, logo set, colors, type, usage rules), branded social templates ($250, so the brand shows up consistently from the first post). Individual total: $650. Bundle: $550. You save $100. Demo: /branding. Add-ons: full brand guide, $150; extra logo variation, $100; one-page Website, $500.",
+      "source": "services-draft §3"
+    },
+    {
+      "id": "package-social-media-kit",
+      "topic": "packages",
+      "title": "Social Media Kit Package",
+      "keywords": [
+        "social media",
+        "social media kit",
+        "templates",
+        "posts",
+        "instagram",
+        "tiktok",
+        "facebook"
+      ],
+      "answer": "The Social Media Kit Package is for a business that posts on social but every post looks different, so nobody recognizes it. Inside: 12 reusable post templates and story templates ($350, sized for each platform the client uses: Instagram, Facebook, TikTok, LinkedIn), posting guide ($200, which template for what, and the colors and fonts to use). Individual total: $550. Bundle: $450. You save $100. Demo: /social-media. Add-ons: 6 extra templates, $150; monthly content calendar, $200; Brand Design, $400.",
+      "source": "services-draft §3"
+    },
+    {
+      "id": "package-crm",
+      "topic": "packages",
+      "title": "CRM Package",
+      "keywords": [
+        "crm",
+        "crm package",
+        "leads",
+        "follow-up",
+        "sales"
+      ],
+      "answer": "The CRM Package is for a business losing track of inquiries and leads, and only noticing when a deal is already gone. Inside: Lead Capture Agent ($400), Follow-up Agent ($400), CRM & Insights Agent ($500), Reporting Agent ($400). Individual total: $1,700. Bundle: $1,400. You save $300. Demo: /crm. Add-ons: Data & Research Agent, $400; extra channel, $150; extra agent, $400.",
+      "source": "services-draft §3"
+    },
+    {
+      "id": "package-rebrand-rebuild",
+      "topic": "packages",
+      "title": "Rebrand & Rebuild Package",
+      "keywords": [
+        "rebrand",
+        "rebuild",
+        "rebrand and rebuild",
+        "new website",
+        "new look"
+      ],
+      "answer": "The Rebrand & Rebuild Package is for a business whose look and site no longer fit what it sells, and that wants both fixed at once instead of in two separate jobs. Inside: Brand Design ($400), UI/UX Design ($600), multi-page Website ($900). Individual total: $1,900. Bundle: $1,550. You save $350. Demo: /rebrand-rebuild. Add-ons: extra website page, $150 per page; Lead Capture Agent, $400; branded social templates, $250.",
+      "source": "services-draft §3"
+    },
+    {
+      "id": "package-full-automate",
+      "topic": "packages",
+      "title": "Full Automate Package",
+      "keywords": [
+        "full automate",
+        "automate",
+        "automation",
+        "all agents",
+        "everything"
+      ],
+      "answer": "The Full Automate Package is for a business that wants the repetitive work handled end to end, so the team stops doing the same task by hand. Inside: all five agents, Lead Capture Agent ($400), Follow-up Agent ($400), Data & Research Agent ($400), Reporting Agent ($400), CRM & Insights Agent ($500). Individual total: $2,100. Bundle: $1,700. You save $400. Demo: /full-automate. Add-ons: extra workflow, $400; extra channel, $150; custom integration, custom quote.",
+      "source": "services-draft §3"
+    },
+    {
+      "id": "pricing-estimates",
+      "topic": "pricing-rules",
+      "title": "Estimates, not quotes",
+      "keywords": [
+        "estimate",
+        "quote",
+        "price",
+        "cost",
+        "how much",
+        "rough estimate"
+      ],
+      "answer": "A range is an estimate, never a quote. The final price depends on scope and is confirmed before any work starts. Rough estimate, not a quote. The final price depends on scope, and we confirm it before any work starts.",
+      "source": "services-draft §4"
+    },
+    {
+      "id": "pricing-project-based",
+      "topic": "pricing-rules",
+      "title": "Project-based pricing only",
+      "keywords": [
+        "per seat",
+        "subscription",
+        "monthly",
+        "pricing model",
+        "project-based"
+      ],
+      "answer": "All work is project-based only. No per-seat pricing, no subscriptions.",
+      "source": "services-draft §4"
+    },
+    {
+      "id": "pricing-currency",
+      "topic": "pricing-rules",
+      "title": "Currency",
+      "keywords": [
+        "usd",
+        "dollars",
+        "pesos",
+        "php",
+        "currency",
+        "filipino",
+        "philippines"
+      ],
+      "answer": "Prices are in USD. If a Filipino client asks, we quote in pesos in the reply.",
+      "source": "services-draft §4"
+    },
+    {
+      "id": "pricing-launch-prices",
+      "topic": "pricing-rules",
+      "title": "Launch prices",
+      "keywords": [
+        "launch prices",
+        "prices rise",
+        "introductory",
+        "proof"
+      ],
+      "answer": "These are launch prices. They rise with proof, same rule as the locked starters.",
+      "source": "services-draft §4"
+    },
+    {
+      "id": "pricing-free-audit",
+      "topic": "pricing-rules",
+      "title": "The audit is free",
+      "keywords": [
+        "free audit",
+        "audit",
+        "redesign",
+        "free"
+      ],
+      "answer": "The audit is free. The redesign is the paid work that follows it. Redesign starts at $800.",
+      "source": "services-draft §4"
+    },
+    {
+      "id": "pricing-custom-quote",
+      "topic": "pricing-rules",
+      "title": "Custom quotes",
+      "keywords": [
+        "custom quote",
+        "custom",
+        "bigger",
+        "quote"
+      ],
+      "answer": "Anything bigger than a package or a range is custom-quoted after we see what is needed.",
+      "source": "services-draft §4"
+    },
+    {
+      "id": "pricing-starters",
+      "topic": "pricing-rules",
+      "title": "Starter prices",
+      "keywords": [
+        "starter",
+        "starter prices",
+        "starting price",
+        "from"
+      ],
+      "answer": "Starter prices: one-page website from $500, one automation from $400, and the free audit, with redesign from $800.",
+      "source": "services-draft §4"
+    },
+    {
+      "id": "custom-e-learning",
+      "topic": "custom-builds",
+      "title": "E-learning platform",
+      "keywords": [
+        "e-learning",
+        "elearning",
+        "online course",
+        "courses",
+        "learning platform",
+        "lms",
+        "students"
+      ],
+      "answer": "Yes, we build e-learning platforms. An e-learning platform is a Web App plus UI/UX Design. Rough estimate: $2,100 to $6,500. It does not match a package, so there is no bundle saving. The final price is a custom quote after scope. Rough estimate, not a quote. The final price depends on scope, and we confirm it before any work starts.",
+      "source": "ask-marcus-spec §5"
+    },
+    {
+      "id": "custom-smart-menu",
+      "topic": "custom-builds",
+      "title": "Smart menu with QR ordering for a restaurant",
+      "keywords": [
+        "smart menu",
+        "qr",
+        "qr code",
+        "restaurant",
+        "menu",
+        "ordering",
+        "order",
+        "forecasting",
+        "food"
+      ],
+      "answer": "Yes, we build a smart menu for a restaurant. A customer scans a QR code printed on the menu and is directed to the menu page to order, the order goes to the restaurant, and there is an admin side to view sales. It is a Web App (menu page, ordering, admin dashboard) plus UI/UX Design, with the CRM & Insights Agent as an add-on for AI forecasting, popular dishes, most likely to sell, and least likely to sell. Rough estimate: $2,600 to $7,700. It does not match a package, so there is no bundle saving. The final price is a custom quote after scope. Rough estimate, not a quote. The final price depends on scope, and we confirm it before any work starts.",
+      "source": "ask-marcus-spec §5"
+    },
+    {
+      "id": "process-how-it-works",
+      "topic": "process",
+      "title": "How it works",
+      "keywords": [
+        "how it works",
+        "process",
+        "steps",
+        "how do you work",
+        "workflow"
+      ],
+      "answer": "How it works, three steps. 1) We map the workflow, what you need. 2) We build it. 3) We hand it over and maintain it. Start with what you need, one thing is enough.",
+      "source": "landing-page-spec §8"
+    },
+    {
+      "id": "process-after-inquiry",
+      "topic": "process",
+      "title": "What happens after an inquiry",
+      "keywords": [
+        "after inquiry",
+        "what happens",
+        "reply",
+        "response time",
+        "inquiry",
+        "contact"
+      ],
+      "answer": "After you send an inquiry, the team replies. Your inquiry includes the services and packages you picked and the estimate shown, for reference. No reply time is promised.",
+      "source": "ask-marcus-spec §4"
+    },
+    {
+      "id": "process-what-we-dont-do",
+      "topic": "process",
+      "title": "What pr-axis dev does not do",
+      "keywords": [
+        "what you don't do",
+        "don't do",
+        "video",
+        "motion",
+        "tiers",
+        "limits"
+      ],
+      "answer": "No per-seat pricing, no subscriptions, no tiers in v1. Video & Motion is held off for now.",
+      "source": "ask-marcus-spec §4"
+    },
+    {
+      "id": "faq-about",
+      "topic": "faqs",
+      "title": "What is pr-axis dev",
+      "keywords": [
+        "about",
+        "who are you",
+        "what is pr-axis",
+        "company",
+        "studio"
+      ],
+      "answer": "pr-axis dev is a design, build, and automate studio. The site is pr-axisdev.com. Three services: Design, Build, Automate. Start with what you need, one thing is enough.",
+      "source": "ask-marcus-spec §4"
+    },
+    {
+      "id": "faq-ask-marcus",
+      "topic": "faqs",
+      "title": "Who is Ask Marcus",
+      "keywords": [
+        "ask marcus",
+        "marcus",
+        "chatbot",
+        "are you human",
+        "real person",
+        "ai"
+      ],
+      "answer": "Ask Marcus is pr-axis dev's AI assistant. It answers questions and gives rough estimates. For anything else, the inquiry form reaches the team.",
+      "source": "ask-marcus-spec §3"
+    },
+    {
+      "id": "faq-how-to-start",
+      "topic": "faqs",
+      "title": "How to start",
+      "keywords": [
+        "how to start",
+        "get started",
+        "start",
+        "work with you",
+        "hire",
+        "contact"
+      ],
+      "answer": "Send an inquiry through the form on pr-axisdev.com. It asks for your name, email, what you need (you can pick the services, or pick Not sure yet), and a message. No account, no signup.",
+      "source": "landing-page-spec §8"
+    },
+    {
+      "id": "faq-video-motion",
+      "topic": "faqs",
+      "title": "Can you make videos",
+      "keywords": [
+        "video",
+        "motion",
+        "videos",
+        "animation"
+      ],
+      "answer": "Video & Motion is held off for now. If you need video work, send it through the inquiry form and the team will answer it.",
+      "source": "ask-marcus-spec §5"
+    }
+  ]
+}

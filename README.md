@@ -106,3 +106,76 @@ byte-identical — do not edit them.
 - Microsoft Clarity, project `zjlfzlzktp`, loaded `afterInteractive` in
   `app/layout.tsx`. The inquiry form carries `data-clarity-mask="true"`; the
   footer carries the disclosure line.
+
+## Ask Marcus (AI assistant)
+
+A floating chat panel on every page. It answers from a knowledge base, prices
+work through the same quote engine as the form, and hands off to the inquiry
+form with the services already picked.
+
+### Where things live
+
+| Piece | Path |
+| --- | --- |
+| Route (server only) | `app/api/ask-marcus/route.ts` |
+| Launcher (first-load) | `components/ask-marcus.tsx` |
+| Panel (lazy chunk) | `components/ask-marcus-panel.tsx` |
+| KB retrieval | `lib/ask-marcus/kb.ts` |
+| Intent + quote answers | `lib/ask-marcus/intent.ts` |
+| Free-tier model chain | `lib/ask-marcus/ai.ts` |
+| Hourly limiter | `lib/ask-marcus/limits.ts` |
+| KB snapshot (generated) | `lib/ask-marcus/kb-snapshot.json`, `content/ask-marcus/*.md` |
+
+### Knowledge base
+
+The KB API (`matanguihanbenson/pr-axis-kb-api`) is canonical. The chatbot reads
+it server-side through `KB_API_URL`. The bundled snapshot is the fallback when
+the API cannot be reached, so the site never depends on it being up.
+
+`scripts/kb-snapshot.mjs` regenerates both the markdown snapshot under
+`content/ask-marcus/` and the JSON the route imports. Run it after any KB
+change, and commit the result:
+
+```bash
+node scripts/kb-snapshot.mjs
+```
+
+Nothing is written if the fetch fails.
+
+### Answer order (retrieval-first, mostly $0)
+
+1. Price question, custom build, or two or more services: `lib/quote.ts` prices
+   it, no model call.
+2. A confident keyword hit, or a short question: the entry is returned as
+   written, no model.
+3. No hit at all: "I don't have that in my notes" plus the form. Nothing is
+   invented.
+4. Only open questions with retrieved context reach a model.
+
+### Cost and providers
+
+Tried in order, each one only when its key is set: Groq, Gemini, OpenRouter.
+No SDKs, no paid billing attached; when a free tier is exhausted or a provider
+fails, the route answers with the resting message and the form link.
+
+Default models (override with `GROQ_MODEL`, `GEMINI_MODEL`,
+`OPENROUTER_MODEL`): `openai/gpt-oss-120b` on Groq, `gemini-2.5-flash-lite` on
+Gemini, `meta-llama/llama-3.3-70b-instruct:free` on OpenRouter. Re-check the
+live free-tier limits and model names in each console before relying on them;
+the spec's numbers are illustrative.
+
+### Limits
+
+- 20 messages per visitor per hour, in memory in `lib/ask-marcus/limits.ts`.
+  Vercel runs routes in separate short-lived instances, so this is best-effort,
+  not a guarantee.
+- Burst cooldown in the widget: 3 messages in 10 seconds starts a 15 second
+  cooldown, extended by 10 seconds per further message to a 60 second maximum.
+  Held messages go out as one request. A refresh starts a new session.
+- No conversation is stored. The session id lives in the tab.
+
+### Environment
+
+`.env.local` is gitignored (`.env*` with `!.env.example`); `.env.example` lists
+every name with placeholders. Production and Preview need the same names in
+the Vercel dashboard.

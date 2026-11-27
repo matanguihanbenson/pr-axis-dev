@@ -10,6 +10,12 @@
 
 - [Home](https://pr-axisdev.com/): What the studio offers, the services and starter prices, how a project runs, and the inquiry form.
 - [Privacy](https://pr-axisdev.com/privacy): What the inquiry form collects and who processes it.
+- [Launch Package](https://pr-axisdev.com/launch): Demo and contents of the Launch Package.
+- [Branding Package](https://pr-axisdev.com/branding): Demo and contents of the Branding Package.
+- [Social Media Kit Package](https://pr-axisdev.com/social-media): Demo and contents of the Social Media Kit Package.
+- [CRM Package](https://pr-axisdev.com/crm): Demo and contents of the CRM Package.
+- [Rebrand & Rebuild Package](https://pr-axisdev.com/rebrand-rebuild): Demo and contents of the Rebrand & Rebuild Package.
+- [Full Automate Package](https://pr-axisdev.com/full-automate): Demo and contents of the Full Automate Package.
 
 ## Notes
 

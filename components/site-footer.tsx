@@ -1,10 +1,11 @@
+import Link from "next/link";
 import { PILLARS } from "@/lib/services";
 import { FooterPillarLink } from "./footer-pillar-link";
 
 const SECTIONS = [
-  { href: "#services", label: "Start with what you need" },
-  { href: "#offer", label: "What we offer" },
-  { href: "#contact", label: "Work with us" },
+  { href: "/#services", label: "Start with what you need" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/#contact", label: "Work with us" },
 ];
 
 function Arrow({ className }: { className: string }) {
@@ -37,25 +38,25 @@ export function SiteFooter() {
 
         <div className="site-footer__top">
           <div className="site-footer__brand">
-            <a className="wordmark site-footer__wordmark" href="#top">
+            <Link className="wordmark site-footer__wordmark" href="/#top">
               pr-axis<span> dev</span>
-            </a>
+            </Link>
             <p className="site-footer__tagline">
               Design, build and automate the parts of a business that keep
               coming back. One person, three services, no handoffs.
             </p>
-            <a className="site-footer__cta" href="#contact">
+            <Link className="site-footer__cta" href="/#contact">
               Start a project
               <Arrow className="site-footer__arrow" />
-            </a>
+            </Link>
           </div>
 
           <nav className="site-footer__col" aria-label="Sections">
             <span className="eyebrow">Sections</span>
             {SECTIONS.map((item) => (
-              <a key={item.label} className="site-footer__link" href={item.href}>
+              <Link key={item.label} className="site-footer__link" href={item.href}>
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -87,10 +88,13 @@ export function SiteFooter() {
               Privacy
             </a>
           </p>
-          <a className="site-footer__link site-footer__link--small" href="#top">
+          <Link
+            className="site-footer__link site-footer__link--small"
+            href="/#top"
+          >
             Back to top
             <Arrow className="site-footer__arrow site-footer__arrow--up" />
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

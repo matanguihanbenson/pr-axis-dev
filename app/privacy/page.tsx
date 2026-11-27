@@ -60,6 +60,20 @@ export default function PrivacyPage() {
           statement.
         </p>
 
+        <h2 className="h2">Ask Marcus, the chat panel</h2>
+        <p className="p">
+          The chat panel answers questions with an AI assistant. What you type
+          there is sent to our AI provider so it can answer, and the reply comes
+          back to you. We do not keep the conversation after your visit ends. The
+          panel does not create an account, and it does not sign you up for
+          anything.
+        </p>
+        <p className="p">
+          Clarity masking is on for the chat panel too, so nothing you type there
+          is recorded. Please keep personal details out of the chat, and use the
+          form for anything that needs a reply from a person.
+        </p>
+
         <h2 className="h2">What we do not do</h2>
         <p className="p">
           We do not sell your details. We do not share them with advertisers. We
@@ -70,8 +84,7 @@ export default function PrivacyPage() {
         <h2 className="h2">Questions</h2>
         <p className="p">
           If you want to know what we hold about you, or want it deleted, send a
-          message through the form and say so. We will reply within one business
-          day.
+          message through the form and say so. We will reply as soon as we can.
         </p>
       </div>
 

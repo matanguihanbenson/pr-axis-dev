@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { PILLARS, type PillarId } from "@/lib/services";
 import { usePillar } from "./pillar-context";
 
@@ -56,6 +57,9 @@ function Arrow() {
 
 export function SiteHeader() {
   const { pillarId, setPillar } = usePillar();
+  // Demo and legal pages reuse this header, where the section ids are not on
+  // the page. Their links point back to the homepage section instead.
+  const onHome = usePathname() === "/";
   const [activeSection, setActiveSection] = useState<SectionId | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -186,16 +190,21 @@ export function SiteHeader() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  const linkHref = (item: (typeof NAV_ITEMS)[number]) => {
+    if (onHome) return item.href;
+    return item.pillar ? "/#services" : `/${item.href}`;
+  };
+
   const renderLink = (
     item: (typeof NAV_ITEMS)[number],
     onNavigate?: () => void,
   ) => (
     <a
       key={item.href}
-      href={item.href}
+      href={linkHref(item)}
       aria-current={isActive(item) ? "true" : undefined}
       onClick={(event) => {
-        if (item.pillar) goToPillar(event, item.pillar);
+        if (item.pillar && onHome) goToPillar(event, item.pillar);
         onNavigate?.();
       }}
     >
@@ -206,7 +215,11 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="page-shell site-header__inner">
-        <a className="wordmark" href="#top" onClick={closeMenu}>
+        <a
+          className="wordmark"
+          href={onHome ? "#top" : "/"}
+          onClick={closeMenu}
+        >
           pr-axis<span> dev</span>
         </a>
 
@@ -215,7 +228,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="site-header__actions">
-          <a className="nav-cta" href="#contact">
+          <a className="nav-cta" href={onHome ? "#contact" : "/#contact"}>
             Work with us
             <Arrow />
           </a>
@@ -245,7 +258,7 @@ export function SiteHeader() {
             </nav>
             <a
               className="nav-cta nav-cta--block"
-              href="#contact"
+              href={onHome ? "#contact" : "/#contact"}
               onClick={closeMenu}
             >
               Work with us

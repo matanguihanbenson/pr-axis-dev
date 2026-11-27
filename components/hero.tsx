@@ -253,7 +253,7 @@ export function Hero() {
           lines and turning at intersections. Decorative. */}
       <div className="hero__circuits" aria-hidden="true">
         <svg className="hero__circuit-map" focusable="false">
-          {[0, 1].map((lane) => (
+          {[0].map((lane) => (
             <path
               key={lane}
               className="hero__circuit-line"

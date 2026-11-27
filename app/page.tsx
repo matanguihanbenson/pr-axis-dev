@@ -3,8 +3,10 @@ import { Hero } from "@/components/hero";
 import { OfferGrid } from "@/components/offer-grid";
 import { PillarProvider } from "@/components/pillar-context";
 import { PillarExplorer } from "@/components/pillar-explorer";
-import { Process, Proof } from "@/components/proof-and-process";
+import { PricingSection } from "@/components/pricing";
+import { Process } from "@/components/proof-and-process";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { ScrollWire } from "@/components/scroll-wire";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
@@ -44,11 +46,9 @@ export default function Home() {
             </div>
           </section>
 
-          <div data-reveal>
-            <Proof />
-          </div>
-
           <Process />
+
+          <PricingSection />
 
           <section className="section" id="contact">
             <div className="page-shell contact-shell">
@@ -58,11 +58,11 @@ export default function Home() {
               </div>
             </div>
           </section>
-
         </main>
         <SiteFooter />
       </PillarProvider>
       <ScrollReveal />
+      <ScrollWire />
     </>
   );
 }
